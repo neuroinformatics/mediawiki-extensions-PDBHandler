@@ -23,7 +23,7 @@ class PDBCheck extends Maintenance {
 	private function doCheck() {
 		$input = PDBHANDLER_TEST_FILE;
 		$output = preg_replace('/\.pdb$/', '', PDBHANDLER_TEST_FILE) . '.png';
-		PDBHandlerUtils::convertToPNG($input, $output);
+		MediaWiki\Extension\PDBHandler\Utils::convertToPNG($input, $output);
 	}
 }
 

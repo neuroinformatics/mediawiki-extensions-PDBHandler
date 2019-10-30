@@ -1,0 +1,53 @@
+{
+	"name": "PDBHandler",
+	"version": "1.1.0",
+	"author": [
+		"Yoshihiro Okumura",
+		"Emw(Original)"
+	],
+	"url": "https://github.com/neuroinformatics/mediawiki-extensions-PDBHandler",
+	"descriptionmsg": "pdbhandler-credits-desc",
+	"license-name": "GPL-2.0-or-later",
+	"requires": {
+		"MediaWiki": ">= 1.31.0"
+	},
+	"type": "media",
+	"config": {
+		"PyMOLCommand": "/usr/bin/pymol",
+		"PDBHandlerUseWebGL": true,
+		"PDBHandlerCacheDirectory": ""
+	},
+	"MessagesDirs": {
+		"PDBHandler": [
+			"i18n"
+		]
+	},
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\PDBHandler\\": "includes/"
+	},
+	"Hooks": {
+		"MimeMagicInit": "MediaWiki\\Extension\\PDBHandler\\Hooks::onMimeMagicInit",
+		"MimeMagicImproveFromExtension": "MediaWiki\\Extension\\PDBHandler\\Hooks::onMimeMagicImproveFromExtension",
+		"MimeMagicGuessFromContent": "MediaWiki\\Extension\\PDBHandler\\Hooks::onMimeMagicGuessFromContent"
+	},
+	"FileExtensions": [
+		"pdb"
+	],
+	"MediaHandlers": {
+		"chemical/x-pdb": "MediaWiki\\Extension\\PDBHandler\\PDBHandler"
+	},
+	"ResourceModules": {
+		"ext.PDBHandler": {
+			"scripts": [
+				"Three.js",
+				"GLmol.js",
+				"ext.PDBHandler.js"
+			]
+		}
+	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "modules",
+		"remoteExtPath": "PDBHandler/modules"
+	},
+	"manifest_version": 1
+}

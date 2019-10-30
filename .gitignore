@@ -1,4 +1,9 @@
-.svn
-*~
-*.kate-swp
-.*.swp
+/vendor
+/node_modules
+npm-debug.log
+yarn-error.log
+
+/.idea
+/.vscode
+/.vagrant
+.php_cs.cache
