@@ -6,7 +6,7 @@ class TransformOutput extends \ThumbnailImage
 {
     public static $serial = 0;
 
-    public function toHtml($options = array())
+    public function toHtml($options = [])
     {
         global $wgOut, $wgPDBHandlerUseWebGL;
         if ($wgPDBHandlerUseWebGL && 0 == self::$serial) {
