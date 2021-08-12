@@ -1,6 +1,6 @@
 {
 	"name": "PDBHandler",
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"author": [
 		"Yoshihiro Okumura",
 		"Emw(Original)"
@@ -9,7 +9,7 @@
 	"descriptionmsg": "pdbhandler-credits-desc",
 	"license-name": "GPL-2.0-or-later",
 	"requires": {
-		"MediaWiki": ">= 1.31.0"
+		"MediaWiki": ">= 1.35.0"
 	},
 	"type": "media",
 	"config": {

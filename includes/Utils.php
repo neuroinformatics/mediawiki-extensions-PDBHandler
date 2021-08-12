@@ -17,6 +17,11 @@ class Utils
         $cachedir = '' !== $wgPDBHandlerCacheDirectory ? $wgPDBHandlerCacheDirectory : $wgUploadDirectory.'/pdbhandler';
         $fileHash = hash_file('sha256', $input);
         $pdbId = self::getPdbId($input);
+        if (!$pdbId) {
+            wfDebugLog('pdbhandler', sprintf('PDBHandler Error on %s: invalid PDB file found "%s"', wfHostname(), $input));
+
+            return false;
+        }
         $workDir = $cachedir.'/'.substr($fileHash, 0, 1).'/'.substr($fileHash, 0, 2).'/'.$fileHash;
         if (!is_dir($workDir)) {
             if (false === @mkdir($workDir, 0777, true)) {
@@ -195,8 +200,13 @@ EOD;
 
             return false;
         }
-        $pdb_id = trim(substr($header, 62, 4));
+        $pdbId = trim(substr($header, 62, 4));
+        if (!preg_match('/^[A-Z0-9]+$/', $pdbId)) {
+            wfDebugLog('pdbhandler', sprintf('PDBHandler Error on %s: invalid PDB ID found in file header "%s".', wfHostname(), $input));
 
-        return strtoupper($pdb_id);
+            return false;
+        }
+
+        return strtoupper($pdbId);
     }
 }

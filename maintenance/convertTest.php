@@ -1,14 +1,16 @@
 <?php
 
+use MediaWiki\Extension\PDBHandler\Utils;
+
 if (!isset($argv[1]) || !file_exists($argv[1])) {
     echo 'Usage: php test.php PDBFILE.pdb'.PHP_EOL;
     exit();
 }
 define('PDBHANDLER_TEST_FILE', $argv[1]);
 
-require_once dirname(dirname(dirname(__FILE__))).'/maintenance/Maintenance.php';
+require_once dirname(dirname(dirname(dirname(__FILE__)))).'/maintenance/Maintenance.php';
 
-class PDBCheck extends Maintenance
+class PDBHandlerConvertTest extends Maintenance
 {
     public function __construct()
     {
@@ -27,9 +29,10 @@ class PDBCheck extends Maintenance
     {
         $input = PDBHANDLER_TEST_FILE;
         $output = preg_replace('/\.pdb$/', '', PDBHANDLER_TEST_FILE).'.png';
-        MediaWiki\Extension\PDBHandler\Utils::convertToPNG($input, $output);
+        $pdbId = Utils::getPdbId($input);
+        Utils::convertToPNG($pdbId, $input, $output);
     }
 }
 
-$maintClass = 'PDBCheck';
+$maintClass = 'PDBHandlerConvertTest';
 require_once RUN_MAINTENANCE_IF_MAIN;
