@@ -37,7 +37,7 @@ class PDBHandlerRebuildData extends Maintenance
             $file = $service->getRepoGroup()->findFile($name);
             $fpath = $file->getLocalRefPath();
             $pdbId = Utils::getPdbId($fpath);
-            if ('' !== $pdbId) {
+            if (!$pdbId) {
                 $rfpath = Utils::getRasterizedFilePath($fpath);
                 if ($rfpath) {
                     list($width, $height) = getimagesize($rfpath);
@@ -58,36 +58,34 @@ class PDBHandlerRebuildData extends Maintenance
                 }
             }
             $this->output(sprintf("%4d. %s - %s\n", $n++, $fpath, $success ? 'OK' : 'ERROR'));
-            if ('' !== $pdbId && $rfpath) {
-                foreach ($file->getHistory() as $ofile) {
-                    $osuccess = false;
-                    $ofpath = $ofile->getLocalRefPath();
-                    $opdbId = Utils::getPdbId($ofpath);
-                    if ('' !== $opdbId) {
-                        $orfpath = Utils::getRasterizedFilePath($ofpath);
-                        if ($orfpath) {
-                            list($owidth, $oheight) = getimagesize($orfpath);
-                            $omime = $magic->guessMimeType($ofpath, false);
-                            list($omajorMime, $ominorMime) = File::splitMime($omime);
-                            $omediaType = $magic->getMediaType(null, $omime);
-                            $this->dbw->update('oldimage', [
-                                'oi_width' => $owidth,
-                                'oi_height' => $oheight,
-                                'oi_bits' => 0,
-                                'oi_media_type' => $omediaType,
-                                'oi_major_mime' => $omajorMime,
-                                'oi_minor_mime' => $ominorMime,
-                            ], [
-                                'oi_name' => $ofile->getName(),
-                                'oi_archive_name' => $ofile->getArchiveName(),
-                            ], __METHOD__);
-                            $ofile->purgeCache();
-                            $ofile->purgeThumbnails();
-                            $osuccess = true;
-                        }
+            foreach ($file->getHistory() as $ofile) {
+                $osuccess = false;
+                $ofpath = $ofile->getLocalRefPath();
+                $opdbId = Utils::getPdbId($ofpath);
+                if (!$opdbId) {
+                    $orfpath = Utils::getRasterizedFilePath($ofpath);
+                    if ($orfpath) {
+                        list($owidth, $oheight) = getimagesize($orfpath);
+                        $omime = $magic->guessMimeType($ofpath, false);
+                        list($omajorMime, $ominorMime) = File::splitMime($omime);
+                        $omediaType = $magic->getMediaType(null, $omime);
+                        $this->dbw->update('oldimage', [
+                            'oi_width' => $owidth,
+                            'oi_height' => $oheight,
+                            'oi_bits' => 0,
+                            'oi_media_type' => $omediaType,
+                            'oi_major_mime' => $omajorMime,
+                            'oi_minor_mime' => $ominorMime,
+                        ], [
+                            'oi_name' => $ofile->getName(),
+                            'oi_archive_name' => $ofile->getArchiveName(),
+                        ], __METHOD__);
+                        $ofile->purgeCache();
+                        $ofile->purgeThumbnails();
+                        $osuccess = true;
                     }
-                    $this->output(sprintf("      + %s - %s\n", $ofpath, $osuccess ? 'OK' : 'ERROR'));
                 }
+                $this->output(sprintf("      + %s - %s\n", $ofpath, $osuccess ? 'OK' : 'ERROR'));
             }
         }
     }
