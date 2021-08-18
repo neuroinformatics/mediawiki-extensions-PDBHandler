@@ -37,7 +37,7 @@ class PDBHandlerRebuildData extends Maintenance
             $file = $service->getRepoGroup()->findFile($name);
             $fpath = $file->getLocalRefPath();
             $pdbId = Utils::getPdbId($fpath);
-            if (!$pdbId) {
+            if ($pdbId) {
                 $rfpath = Utils::getRasterizedFilePath($fpath);
                 if ($rfpath) {
                     list($width, $height) = getimagesize($rfpath);
@@ -62,7 +62,7 @@ class PDBHandlerRebuildData extends Maintenance
                 $osuccess = false;
                 $ofpath = $ofile->getLocalRefPath();
                 $opdbId = Utils::getPdbId($ofpath);
-                if (!$opdbId) {
+                if ($opdbId) {
                     $orfpath = Utils::getRasterizedFilePath($ofpath);
                     if ($orfpath) {
                         list($owidth, $oheight) = getimagesize($orfpath);
