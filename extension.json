@@ -1,6 +1,6 @@
 {
 	"name": "PDBHandler",
-	"version": "1.2.0",
+	"version": "1.2.1",
 	"author": [
 		"Yoshihiro Okumura",
 		"Emw(Original)"
@@ -9,13 +9,19 @@
 	"descriptionmsg": "pdbhandler-credits-desc",
 	"license-name": "GPL-2.0-or-later",
 	"requires": {
-		"MediaWiki": ">= 1.35.0"
+		"MediaWiki": ">= 1.39.0"
 	},
 	"type": "media",
 	"config": {
-		"PyMOLCommand": "/usr/bin/pymol",
-		"PDBHandlerUseWebGL": true,
-		"PDBHandlerCacheDirectory": ""
+		"PyMOLCommand": {
+			"value": "/usr/bin/pymol"
+		},
+		"PDBHandlerUseWebGL": {
+			"value": true
+		},
+		"PDBHandlerCacheDirectory": {
+			"value": ""
+		}
 	},
 	"MessagesDirs": {
 		"PDBHandler": [
@@ -26,6 +32,7 @@
 		"MediaWiki\\Extension\\PDBHandler\\": "includes/"
 	},
 	"Hooks": {
+		"BeforePageDisplay": "MediaWiki\\Extension\\PDBHandler\\Hooks::onBeforePageDisplay",
 		"MimeMagicInit": "MediaWiki\\Extension\\PDBHandler\\Hooks::onMimeMagicInit",
 		"MimeMagicImproveFromExtension": "MediaWiki\\Extension\\PDBHandler\\Hooks::onMimeMagicImproveFromExtension",
 		"MimeMagicGuessFromContent": "MediaWiki\\Extension\\PDBHandler\\Hooks::onMimeMagicGuessFromContent"
@@ -38,16 +45,14 @@
 	},
 	"ResourceModules": {
 		"ext.PDBHandler": {
-			"scripts": [
-				"Three.js",
+			"localBasePath": "modules",
+			"remoteExtPath": "PDBHandler/modules",
+			"packageFiles": [
+				"ext.PDBHandler.js",
 				"GLmol.js",
-				"ext.PDBHandler.js"
+				"Three.js"
 			]
 		}
 	},
-	"ResourceFileModulePaths": {
-		"localBasePath": "modules",
-		"remoteExtPath": "PDBHandler/modules"
-	},
-	"manifest_version": 1
+	"manifest_version": 2
 }

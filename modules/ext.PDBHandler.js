@@ -2,6 +2,9 @@
  * ext.PDBHandler module
  */
 'use strict';
+
+var GLmol = require('./GLmol.js');
+
 (function ($, window, document) {
 
 function hasWebGLEnabled() {

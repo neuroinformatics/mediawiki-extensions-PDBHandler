@@ -5,10 +5,20 @@ namespace MediaWiki\Extension\PDBHandler;
 class Hooks
 {
     /**
+     * Hook: BeforePageDisplay.
+     *
+     * @param \OutputPage $out
+     * @param \Skin       $skin
+     */
+    public static function onBeforePageDisplay(&$out, &$skin)
+    {
+        $out->addModules(['ext.PDBHandler']);
+    }
+
+    /**
      * Hook: MimeMagicInit.
      *
      * @param \MimeAnalyzer $mimeMagic
-     * @param object        $addToList
      */
     public static function onMimeMagicInit($mimeMagic)
     {

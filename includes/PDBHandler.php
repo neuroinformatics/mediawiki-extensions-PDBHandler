@@ -52,7 +52,6 @@ class PDBHandler extends \ImageHandler
      * validate a thumbnail parameter at parse time.
      *
      * @param string $name
-     * @param mixed  $value
      *
      * @return bool
      */
@@ -137,7 +136,7 @@ class PDBHandler extends \ImageHandler
         }
 
         $ret = Utils::resizePNG($srcPath, $dstPath, $width, $height);
-        if ($this->removeBadFile($dstPath, ($ret ? 0 : 1))) {
+        if ($this->removeBadFile($dstPath, $ret ? 0 : 1)) {
             wfDebugLog('thumbnail', sprintf('Thumbnail failed on %s: could not resize image of "%s" to width:%s, height:%s', wfHostname(), $file->getPath(), $width, $height));
 
             return new \MediaTransformError('thumbnail_error', $width, $height, 'failed to resize image');

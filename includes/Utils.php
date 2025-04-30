@@ -53,9 +53,9 @@ class Utils
     /**
      * resize png image file.
      *
-     * @param $input string
+     * @param $input  string
      * @param $output string
-     * @param $width int
+     * @param $width  int
      * @param $height int
      *
      * @return bool
