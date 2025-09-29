@@ -25,7 +25,7 @@ class Utils
         $workDir = $cachedir.'/'.substr($fileHash, 0, 1).'/'.substr($fileHash, 0, 2).'/'.$fileHash;
         if (!is_dir($workDir)) {
             if (false === @mkdir($workDir, 0777, true)) {
-                wfDebugLog('pdbhandler', sprintf('PDBHandler Error on %s: faield to create cache directory "%s"', wfHostname(), $workDir));
+                wfDebugLog('pdbhandler', sprintf('PDBHandler Error on %s: failed to create cache directory "%s"', wfHostname(), $workDir));
 
                 return false;
             }
@@ -33,7 +33,7 @@ class Utils
         $srcPath = $workDir.'/'.$pdbId.'.pdb';
         if (!file_exists($srcPath)) {
             if (false === @copy($input, $srcPath)) {
-                wfDebugLog('pdbhandler', sprintf('PDBHandler Error on %s: faield to copy PDB file "%s" to cache directory "%s"', wfHostname(), $input, $srcPath));
+                wfDebugLog('pdbhandler', sprintf('PDBHandler Error on %s: failed to copy PDB file "%s" to cache directory "%s"', wfHostname(), $input, $srcPath));
 
                 return false;
             }
@@ -41,7 +41,7 @@ class Utils
         $dstPath = $workDir.'/'.$pdbId.'.png';
         if (!file_exists($dstPath)) {
             if (!self::convertToPNG($pdbId, $srcPath, $dstPath)) {
-                wfDebugLog('pdbhandler', sprintf('PDBHandler Error on %s: faield to convert PDB to PNG "%s"', wfHostname(), $srcPath));
+                wfDebugLog('pdbhandler', sprintf('PDBHandler Error on %s: failed to convert PDB to PNG "%s"', wfHostname(), $srcPath));
 
                 return false;
             }
@@ -153,7 +153,7 @@ EOD;
         fclose($pipes[2]);
         $ret = proc_close($proc);
         if (0 != $ret || !file_exists($poutput)) {
-            wfDebugLog('pdbhandler', sprintf('PDBHandler Error on %s: unexpected error occured in `pymol` command.', wfHostname(), $cmd));
+            wfDebugLog('pdbhandler', sprintf('PDBHandler Error on %s: unexpected error occurred in `pymol` command.', wfHostname(), $cmd));
 
             return false;
         }
@@ -170,7 +170,7 @@ EOD;
         $retval = 0;
         $err = wfShellExec($cmd, $retval, $env);
         if (0 !== $retval) {
-            wfDebugLog('pdbhandler', sprintf('PDBHandler Error on %s: unexpected error occured in `convert` command.', wfHostname(), $cmd));
+            wfDebugLog('pdbhandler', sprintf('PDBHandler Error on %s: unexpected error occurred in `convert` command.', wfHostname(), $cmd));
 
             return false;
         }
@@ -189,22 +189,26 @@ EOD;
     {
         $fp = fopen($input, 'rb');
         if (false === $fp) {
-            wfDebugLog('pdbhandler', sprintf('PDBHandler Error on %s: filed to open file "%s".', wfHostname(), $input));
+            wfDebugLog('pdbhandler', sprintf('PDBHandler Error on %s: failed to open file "%s".', wfHostname(), $input));
 
             return false;
         }
         $header = fread($fp, 80);
         fclose($fp);
         if ('HEADER' != substr($header, 0, 6)) {
-            wfDebugLog('pdbhandler', sprintf('PDBHandler Error on %s: filed to parse file header "%s".', wfHostname(), $input));
+            wfDebugLog('pdbhandler', sprintf('PDBHandler Error on %s: failed to parse file header "%s".', wfHostname(), $input));
+
+            return false;
+        }
+        if (!preg_match('/^[0-9]{2}-[A-Z]{3}-[0-9]{2}$/i', substr($header, 50, 9))) {
+            wfDebugLog('pdbhandler', sprintf('PDBHandler Error on %s: failed to get deposition date in file header "%s".', wfHostname(), $input));
 
             return false;
         }
         $pdbId = trim(substr($header, 62, 4));
-        if (!preg_match('/^[A-Z0-9]+$/', $pdbId)) {
-            wfDebugLog('pdbhandler', sprintf('PDBHandler Error on %s: invalid PDB ID found in file header "%s".', wfHostname(), $input));
-
-            return false;
+        if (!preg_match('/^[A-Z0-9]+$/i', $pdbId)) {
+            wfDebugLog('pdbhandler', sprintf('PDBHandler Warning on %s: PDB ID not found in file header "%s".', wfHostname(), $input));
+            $pdbId = 'XXXX'; // dummy id
         }
 
         return strtoupper($pdbId);
